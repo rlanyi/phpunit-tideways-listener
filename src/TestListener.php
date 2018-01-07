@@ -20,6 +20,33 @@ final class TestListener implements TestListenerInterface
     use TestListenerDefaultImplementation;
 
     /**
+     * @var string[]
+     */
+    private const FILTER = [
+        'Composer\Autoload',
+        'DeepCopy',
+        'PHPUnit',
+        'Prophecy',
+        'phpDocumentor\Reflection',
+        'Doctrine\Instantiator',
+        'SebastianBergmann\CodeCoverage',
+        'SebastianBergmann\Comparator',
+        'SebastianBergmann\Diff',
+        'SebastianBergmann\Environment',
+        'SebastianBergmann\Exporter',
+        'SebastianBergmann\GlobalState',
+        'SebastianBergmann\Invoker',
+        'SebastianBergmann\RecursionContext',
+        'SebastianBergmann\Timer',
+        'SebastianBergmann\Version',
+        'File_Iterator',
+        'PHP_Invoker',
+        'PHP_Timer',
+        'PHP_Token',
+        'Text_Template'
+    ];
+
+    /**
      * @var string
      */
     private $targetDirectory;
@@ -53,6 +80,8 @@ final class TestListener implements TestListenerInterface
 
         $data = \tideways_xhprof_disable();
 
+        $this->filter($data);
+
         \file_put_contents($this->fileName($test), \json_encode($data));
     }
 
@@ -85,5 +114,31 @@ final class TestListener implements TestListenerInterface
         }
 
         return $this->targetDirectory . DIRECTORY_SEPARATOR . $id . '.json';
+    }
+
+    private function filter(array &$data): void
+    {
+        foreach (\array_keys($data) as $key) {
+            if ($key === 'main()') {
+                continue;
+            }
+
+            [$caller, $callee] = \explode('==>', $key);
+
+            if ($callee === 'spl_autoload_call' || self::shouldBeFiltered($caller) || self::shouldBeFiltered($callee)) {
+                unset($data[$key]);
+            }
+        }
+    }
+
+    private function shouldBeFiltered(string $className): bool
+    {
+        foreach (self::FILTER as $classNamePrefix) {
+            if (\strpos($className, $classNamePrefix) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
