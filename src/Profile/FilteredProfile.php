@@ -38,6 +38,7 @@ final class FilteredProfile
         'PHP_Token',
         'Text_Template'
     ];
+
     /**
      * @var array
      */
