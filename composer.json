@@ -7,6 +7,11 @@
       "name": "Sebastian Bergmann",
       "email": "sebastian@phpunit.de",
       "role": "Developer"
+    },
+    {
+      "name": "Robert Lanyi",
+      "email": "lanyi.robert.attila@gmail.com",
+      "role": "Developer"
     }
   ],
   "support": {
