@@ -42,6 +42,10 @@ final class TestListener implements TestListenerInterface
             return;
         }
 
+        if (!\extension_loaded('tideways_xhprof')) {
+            return;
+        }
+
         if (!isset($_SERVER['REQUEST_TIME_FLOAT'])) {
             $_SERVER['REQUEST_TIME_FLOAT'] = \microtime(true);
         }
@@ -52,6 +56,10 @@ final class TestListener implements TestListenerInterface
     public function endTest(Test $test, $time): void
     {
         if (!$test instanceof TestCase) {
+            return;
+        }
+
+        if (!\extension_loaded('tideways_xhprof')) {
             return;
         }
 
@@ -112,7 +120,7 @@ final class TestListener implements TestListenerInterface
     private function ensureProfilerIsAvailable(): void
     {
         if (!\extension_loaded('tideways_xhprof')) {
-            throw new TidewaysExtensionNotLoadedException;
+            echo "\033[31mExtension tideways_xhprof is not loaded, won't produce profiling output.\033[0m\n";
         }
     }
 
@@ -122,7 +130,7 @@ final class TestListener implements TestListenerInterface
     private function ensureTargetDirectoryIsWritable(string $directory): void
     {
         if (!@\mkdir($directory) && !\is_dir($directory)) {
-            throw new InvalidTargetDirectoryException;
+            printf("\033[31mData directory %s doesn't exists or is not writalbe, won't produce profiling output.\033[0m\n", $directory);
         }
     }
 
