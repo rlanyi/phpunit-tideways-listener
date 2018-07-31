@@ -77,7 +77,7 @@ final class TestListener implements TestListenerInterface
 
         $uri = \array_key_exists('REQUEST_URI', $_SERVER)
             ? $_SERVER['REQUEST_URI']
-            : null;
+            : $this->fileName($test, true);
         if (empty($uri) && isset($_SERVER['argv'])) {
             $cmd = \basename($_SERVER['argv'][0]);
             $uri = $cmd . ' ' . \implode(' ', \array_slice($_SERVER['argv'], 1));
@@ -134,12 +134,16 @@ final class TestListener implements TestListenerInterface
         }
     }
 
-    private function fileName(TestCase $test): string
+    private function fileName(TestCase $test, $filename_only = null): string
     {
         $id = \str_replace('\\', '_', \get_class($test)) . '::' . $test->getName(false);
 
         if (!empty($test->dataDescription())) {
             $id .= '#' . \str_replace(' ', '_', $test->dataDescription());
+        }
+
+        if ($filename_only) {
+            return $id;
         }
 
         return $this->targetDirectory . DIRECTORY_SEPARATOR . $id . '.json';
