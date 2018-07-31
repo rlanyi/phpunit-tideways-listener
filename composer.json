@@ -20,7 +20,7 @@
   "require": {
     "php": "^7.1",
     "ext-tideways_xhprof": "*",
-    "phpunit/phpunit": "^6"
+    "phpunit/phpunit": "^7"
   },
   "autoload": {
     "classmap": [
