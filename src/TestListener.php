@@ -53,7 +53,7 @@ final class TestListener implements TestListenerInterface
         \tideways_xhprof_enable(\TIDEWAYS_XHPROF_FLAGS_MEMORY | \TIDEWAYS_XHPROF_FLAGS_CPU);
     }
 
-    public function endTest(Test $test, $time): void
+    public function endTest(Test $test, float $time): void
     {
         if (!$test instanceof TestCase) {
             return;
